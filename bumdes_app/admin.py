@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Transaksi, Laporan
+from .models import Transaksi, Pesan
 
 admin.site.register(Transaksi)
-admin.site.register(Laporan)
+admin.site.register(Pesan)

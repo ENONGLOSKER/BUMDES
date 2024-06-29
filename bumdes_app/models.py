@@ -16,10 +16,10 @@ class Transaksi(models.Model):
     def __str__(self):
         return f'{self.tanggal} - {self.jenis} - {self.jumlah}'
 
-class Laporan(models.Model):
-    tanggal_mulai = models.DateField()
-    tanggal_selesai = models.DateField()
+class Pesan(models.Model):
+    email = models.EmailField()
+    pesan = models.TextField()
     dibuat_pada = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Laporan dari {self.tanggal_mulai} hingga {self.tanggal_selesai}'
+        return f'Pesaan dari {self.email}'

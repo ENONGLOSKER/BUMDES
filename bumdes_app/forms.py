@@ -1,12 +1,15 @@
 from django import forms
-from .models import Transaksi, Laporan
+from .models import Transaksi
 
 class TransaksiForm(forms.ModelForm):
     class Meta:
         model = Transaksi
-        fields = ['tanggal', 'jumlah', 'jenis', 'deskripsi', 'status']
+        fields = ['tanggal', 'jumlah', 'jenis', 'deskripsi']
 
-class LaporanForm(forms.ModelForm):
-    class Meta:
-        model = Laporan
-        fields = ['tanggal_mulai', 'tanggal_selesai']
+        widgets = {
+            'tanggal':forms.DateInput(attrs={'class':'form-control', 'type':'date'}),
+            'jumlah':forms.NumberInput(attrs={'class':'form-control'}),
+            'jenis':forms.Select(attrs={'class':'form-control'}),
+            'deskripsi':forms.Textarea(attrs={'class':'form-control'}),
+            'status':forms.CheckboxInput(attrs={'class':'form-control'}),
+        }

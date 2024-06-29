@@ -23,16 +23,24 @@ from bumdes_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+
+    path('login/', views.sigin_form, name='login'),
+    path('logout/', views.signout_form, name='logout'),
+
+    path('pesan/kirim/', views.kirim_pesan, name='kirim_pesan'),
+    path('pesan/', views.pesan, name='pesan'),
+    path('pesan/<int:id>/', views.hapus_pesan, name='hapus_pesan'),
+
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('laporan/', views.laporan, name='laporan'),
+    path('laporan/cetak/', views.cetak_laporan, name='cetak_laporan'),
+
+    path('transaksi/masuk/', views.transaksi_masuk, name='transaksi_masuk'),
+    path('transaksi/keluar/', views.transaksi_keluar, name='transaksi_keluar'),
+
     path('transaksi/', views.transaksi_list, name='transaksi_list'),
     path('transaksi/create/', views.transaksi_create, name='transaksi_create'),
-    path('transaksi/<int:pk>/', views.transaksi_detail, name='transaksi_detail'),
-    path('transaksi/<int:pk>/update/', views.transaksi_update, name='transaksi_update'),
-    path('transaksi/<int:pk>/delete/', views.transaksi_delete, name='transaksi_delete'),
-    # laporan
-    path('laporan/', views.laporan_list, name='laporan_list'),
-    path('laporan/create/', views.laporan_create, name='laporan_create'),
-    path('laporan/<int:pk>/', views.laporan_detail, name='laporan_detail'),
-    path('laporan/<int:pk>/update/', views.laporan_update, name='laporan_update'),
-    path('laporan/<int:pk>/delete/', views.laporan_delete, name='laporan_delete'),
+    path('transaksi/<int:id>/update/', views.transaksi_update, name='transaksi_update'),
+    path('transaksi/<int:id>/delete/', views.transaksi_delete, name='transaksi_delete'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

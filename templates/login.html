@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+  <title>BUMDES - login</title>
+  <link rel="stylesheet" href="{% static 'css/bumdes_login.css' %}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <style>
+    
+  </style>
+</head>
+<body>
+  
+  <navbar class="navbar">
+    <div class="navbar-logo">
+      <img src="{% static 'img/logo.png' %}" alt="Logo">
+      <span>BUMDes</span>
+    </div>
+
+    <ul class="navbar-menu" id="navbarMenu">
+      <li><a href="{% url 'index' %}">Home</a></li>
+      <li><a href="{% url 'index' %}">About</a></li>
+      <li><a href="{% url 'index' %}">Contact</a></li>
+      <li><a href="{% url 'index' %}">Finance</a></li>
+    </ul>
+
+    <div class="navbar-actions">
+      <a href="{% url 'login' %}">Sign In</a>
+    </div>
+
+    <button class="navbar-toggler" id="navbarToggler">&#9776;</button>
+  </navbar>
+
+  <div class="content5">
+
+    <div class="content5-contact">
+      <div class="contact">
+        <img src="{% static 'img/logo.png' %}" alt="logo">
+        <h3>Platform Manajemen Keuangan BUMDes</h3>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        <h3 style="margin-bottom: 50px; font-size: 30px; text-align: center;">Sing in</h3>
+
+        <label for="username">USERNAME
+          <input type="text" name="username" id="username">
+        </label>
+        <label for="password">PASSWORD
+          <input type="password" name="password" id="password">
+        </label> <br>
+
+        <button type="submit">Login</button>
+        <p style="text-align: center;">Kembali ke halaman <a href="{% url 'index' %}" style="text-decoration: none; font-weight: 600; color: #8ead02;"> Utama</a></p>
+      </form>
+    </div>
+  </div>
+
+
+  <footer>
+    <div class="media">
+      <p>Ikuti kami di media sosial:</p>
+      <div class="media-icon">
+        <a href=""><ion-icon name="logo-instagram" id="icon"></ion-icon></a>
+        <a href=""><ion-icon name="logo-facebook"id="icon"></ion-icon></a>
+        <a href=""><ion-icon name="logo-tiktok" id="icon"></ion-icon></a>
+        <a href=""><ion-icon name="logo-twitter" id="icon"></ion-icon> </a>
+      </div>
+    </div>
+    <span>© 2024 BUMDes Maju Sejahtera. Jl. Raya Desa Maju No. 123, Desa Maju, Kabupaten X, Provinsi Y.</span>
+  </footer>
+  .
+  <!-- humburger menu -->
+  <script>
+    // Toggle navbar menu for mobile
+    document.getElementById('navbarToggler').addEventListener('click', function() {
+      var navbarMenu = document.getElementById('navbarMenu');
+      navbarMenu.classList.toggle('active');
+    });
+  </script>
+
+  <!-- icon -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <!-- mata uang -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const currencyElements = document.querySelectorAll('.currency');
+        currencyElements.forEach(function(element) {
+            const amount = parseFloat(element.textContent);
+            const formattedAmount = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+            }).format(amount);
+            element.textContent = formattedAmount;
+        });
+    });
+</script>
+</body>
+</html>
