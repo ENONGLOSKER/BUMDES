@@ -29,17 +29,17 @@
             padding: 10px;
             text-align: center;
         }
-        .kop{
-                
-            border-bottom: 8px solid black;
-        }
         .logo img{
             max-width: 200px;
         }
         .keterangan{
-            background-color: aqua;
             padding: 0 10px;
             width: 100%;
+        }
+        .keterangan p{
+            font-size: 20px;
+            background-color: black;
+            color: white;
         }
         @media print {
             .no-print {
@@ -49,19 +49,38 @@
                 font-size: 16px;
             }
             .keterangan h1{
-                font-size: 20px;
+                font-size: 15px;
             }
             .keterangan h2{
-                font-size: 18px;
+                font-size: 14px;
+            }
+            .kop p{
+                font-size: 10px;
+                padding: 5px;
+                background-color: rgb(0, 0, 0) !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                color: white;
+                width: 100%;
+                margin-top: -1px;
             }
             .kop{
-                border-bottom: 4px solid black;
+                /* border-bottom: 4px solid black; */
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .kop .kop-ket{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             .logo{
                 max-width: 100px;
             }
             .logo img{
-                max-width: 100px;
+                max-width: 60px;
             }
             .keterangan{
                 padding: 0 10px;
@@ -73,16 +92,19 @@
 <body>
     <div class="container">
         
-        <div class="kop" style="display: flex; justify-content: space-between; text-align: center; background-color: aqua; align-items: center;">
-            <div class="logo" >
-                <img src="{% static 'img/logo.png' %}" alt="">
+        <div class="kop" style="display: flex; justify-content: space-between; text-align: center;">
+            <div class="kop-ket">
+                <div class="logo" >
+                    <img src="{% static 'img/lotim.png' %}" alt="">
+                </div>
+                <div class="keterangan" >
+                    <h3>PEMERITAH DESA AIKMEL UTARA</h3>
+                    <h1>BADAN USAHA MILIK DESA "BUMDES MITRA RINJANI"</h1>
+                    <h2>DESA AIKMEL UTARA KECAMATAN AIKMEL LOMBOK TIMRU</h2>
+                </div>
+                <img src="{% static 'img/logos.png' %}" alt="logo" style="width: 75px;">
             </div>
-            <div class="keterangan" >
-                <h3>Badan Usaha Milik Desa</h3>
-                <h1>"MAJU SUKSES"</h1>
-                <h2>DESA ANJANI KECAMATAN SURALAGA</h2>
-                <p>Alamat: Jl. Labuan Lombok - Mataram</p>
-            </div>
+            <p>Alamat: Jln. try Sutrisno No 01 Aikmel Utara Kecamatan Aikmel Utara Kode Pos 83653</p>
         </div>
         <h2>Laporan Keuangan</h2>
         <p style="font-size: 12px; text-align: center; margin-top: -18px; margin-bottom: 20px;">Periode: {{ transaksi.first.tanggal|date:"d M Y" }} - {{ transaksi.last.tanggal|date:"d M Y" }}</p>
@@ -119,12 +141,22 @@
                 </tr>
             </tbody>
         </table>
+        <p style="text-align: center; font-size: 12px; font-weight: 600; margin-top: 50px;">Pengurus BUMDes Mitra Rinjani</p>
+        <div class="ttd" style="display: flex; align-items: center; justify-content: space-between; gap: 20px; text-align: center;">
+            <div class="ket" style="display: flex; flex-direction: column; gap: 60px; font-size: 12px;">
+                <p>Ketua</p>
 
-        <div class="ttd" style="display: flex; justify-content: end; margin-top: 80px;">
-            <div class="ket" style="display: flex; flex-direction: column; gap: 100px; font-size: 12px;">
-                <p>Mengetahui Kepala Desa</p>
+                <p style="text-decoration: underline;">MUH. AZHAR BASRI, S.Pd</p>
+            </div>
+            <div class="ket" style="display: flex; flex-direction: column; gap: 60px; font-size: 12px;">
+                <p>Sekertaris</p>
 
-                <p style="text-decoration: underline;">Zaenul Alquairi, QH. S.Kom</p>
+                <p style="text-decoration: underline;">ZAERONI KURNIAWAN, S.Pd</p>
+            </div>
+            <div class="ket" style="display: flex; flex-direction: column; gap: 60px; font-size: 12px;">
+                <p>Bendahara</p>
+
+                <p style="text-decoration: underline;">JAUZAN HARIR, S.Pd</p>
             </div>
         </div>
 

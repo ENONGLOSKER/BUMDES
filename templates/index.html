@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/logos.png' %}">
   <title>BUMDES</title>
   <link rel="stylesheet" href="{% static 'css/bumdes_index.css' %}">
 
@@ -12,15 +12,42 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <style>
-    
+    ::selection {
+      background: yellow; /* Ganti dengan warna yang diinginkan */
+      color: black; /* Ganti dengan warna teks yang diinginkan */
+    }
+    header .head-title h1{
+      font-size: 65px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      line-height: 110px;
+    }
+    header .head-title p{
+        font-size: 20px;
+        max-width: 780px;
+    }
+    .content2-card .card-item{
+      background-color: white;
+      width: 305px;
+      padding: 50px 30px;
+      text-align: center;
+      border-radius: 12px;
+    }
+
+    .content3-about h2{
+      font-size: 55px;
+    }
   </style>
 </head>
 <body>
   
   <navbar class="navbar">
     <div class="navbar-logo">
-      <img src="{% static 'img/logo.png' %}" alt="Logo">
-      <span>BUMDes</span>
+      <img src="{% static 'img/logos.png' %}" alt="Logo">
+      <span>
+        <h5 style="font-size: 12px; background-color: #9eff2e; margin-bottom: -5px; width: fit-content; padding: 0 4px; border-radius: 2px;">BUMDes</h5>
+        MitraRinjani
+      </span>
     </div>
 
     <ul class="navbar-menu" id="navbarMenu">
@@ -40,9 +67,9 @@
   <div class="content1">
     <header>
         <div class="head-title">
-            <h5>Solusi Tepat untuk Desa Hebat TESTING</h5>
-            <h1>Platform Manajemen Keuangan <span>BUMDes</span></h1> <br>
-            <p>Keuangan digital meningkatkan transparansi dan akuntabilitas dengan mencatat transaksi real-time, memastikan efisiensi dan kepercayaan dalam penggunaan dana desa.</p>
+            <h5>BUMDES AIKMEL UTARA</h5>
+            <h1>Platform Manajemen Keuangan <span>PAMDes</span></h1> <br>
+            <p>Dengan hadirnya plaform keuangan PAMDes ini diharapkan meningkatkan transparansi dan akuntabilitas dengan mencatat transaksi secara real-time, memastikan efisiensi dan kepercayaan dalam penggunaan dana desa Aikmel Utara Kecamatan Aikmel - Lombok Timur</p>
 
             <a href="{% url 'login' %}" target="_blank">Dashboard</a>
             <div class="rekap">
@@ -100,12 +127,47 @@
     <div class="content3-about">
       <span >About</span>
       <h2>Platform Manajemen Keuangan BUMDes</h2>
-      <p>Platform yang didedikasikan untuk meningkatkan
-        kesejahteraan dan transparansi di desa-desa melalui
-        solusi keuangan digital terdepan. Dengan fokus pada 
-        efisiensi dan akuntabilitas, mendukung BUMDes dalam 
-        mengelola dan memanfaatkan dana secara optimal
-        untuk Membangun Kesejahteraan Desa.</p>
+      <p>Didedikasikan untuk meningkatkan kesejahteraan dan transparansi melalui solusi keuangan digital terdepan. Dengan fokus pada efisiensi dan akuntabilitas mendukung BUMDes dalam mengelola dan memanfaatkan dana secara optimal untuk Membangun Kesejahteraan Desa.</p>
+
+        <div class="point" style="display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+          <div class="point1" style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Efisiensi dalam Pengelolaan </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Transparansi </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Akuntabilitas </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Keamanan </h6>
+            </div>
+          </div>
+
+          <div class="point2" style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Meningkatkan Perekonomian  </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Memberdayakan Sumberdaya lokal  </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Mengoptimalkan Potensi Desa  </h6>
+            </div>
+            <div class="point-item" style="display: flex;  align-items: center; gap: 10px;">
+              <ion-icon name="checkmark-circle-outline" style="color: #7ce503; border-radius: 50%; font-size: 20px; font-weight: bold;"></ion-icon>
+              <h6 style="font-weight: 500; font-size: 15px;">Mendukung Kemandirian Desa  </h6>
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 
@@ -186,7 +248,7 @@
 
     <div class="content5-contact">
       <div class="contact">
-        <img src="{% static 'img/logo.png' %}" alt="logo">
+        <img src="{% static 'img/logos.png' %}" alt="logo">
         <h3>Platform Manajemen Keuangan BUMDes</h3>
       </div>
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Background on Click</title>
+  <style>
+    .selected {
+      background-color: lightblue; /* Ganti dengan warna yang diinginkan */
+    }
+  </style>
+</head>
+<body>
+  <div class="clickable">Click me to change background</div>
+  <div class="clickable">Click me too!</div>
+
+  <script>
+    document.querySelectorAll('.clickable').forEach(item => {
+      item.addEventListener('click', event => {
+        // Remove the 'selected' class from all elements
+        document.querySelectorAll('.clickable').forEach(el => el.classList.remove('selected'));
+        
+        // Add the 'selected' class to the clicked element
+        event.target.classList.add('selected');
+      });
+    });
+  </script>
+</body>
+</html>

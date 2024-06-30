@@ -100,12 +100,7 @@ header .head-title h5{
   font-weight: 500;
   text-transform: uppercase;
 }
-header .head-title h1{
-  font-size: 75px;
-  font-weight: bold;
-  margin-bottom: 30px;
-  line-height: 110px;
-}
+
 header .head-title h1 span{
   /* color: var(--satu); */
   display: inline-block;
@@ -117,11 +112,6 @@ header .head-title h1 span{
   50% { color: #C4F000; }
   75% { color: green; }
   100% { color: #f90057; }
-}
-
-header .head-title p{
-    font-size: 22px;
-    max-width: 850px;
 }
 header .head-title a{
     margin-top: 40px;
@@ -186,13 +176,6 @@ header .head-img img{
   justify-content: center;
   gap: 20px;
 }
-.content2-card .card-item{
-  background-color: white;
-  max-width: 305px;
-  padding: 50px 30px;
-  text-align: center;
-  border-radius: 12px;
-}
 .content2-card .card-item:nth-child(1){
   background-color: var(--satu);
 }
@@ -233,9 +216,7 @@ header .head-img img{
   background-color: var(--satu);
   padding: 0 14px;
 }
-.content3-about h2{
-  font-size: 60px;
-}
+
 .content3-about P{
   font-size: 20px;
   margin-top: 40px;

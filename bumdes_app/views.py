@@ -46,8 +46,8 @@ def sigin_form(request):
             messages.error(request, "Sign in Gagal, Silahkan coba kembali!")
             return redirect('login')
         
-    # if request.user.is_authenticated:
-    #     return redirect('dashboard')
+    if request.user.is_authenticated:
+        return redirect('dashboard')
 
     return render(request, 'login.html')
 
