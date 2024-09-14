@@ -8,6 +8,7 @@ from django.db.models.functions import TruncMonth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
+from datetime import datetime
 
 def index(request):
     data = Transaksi.objects.order_by('-id')
@@ -136,32 +137,6 @@ def transaksi_keluar(request):
     return render(request, 'dashboard_transaksi_keluar.html', {'transaksi': transaksi, 'saldo': saldo})
 
 @login_required
-def laporan(request):
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
-
-    # Calculate saldo
-    saldo = total_masuk - total_keluar
-
-    transaksi = Transaksi.objects.order_by('-jenis')
-
-    return render(request, 'dashboard_laporan.html', {'transaksi': transaksi, 'saldo': saldo, 'total_masuk':total_masuk, 'total_keluar':total_keluar })
-
-@login_required
-def cetak_laporan(request):
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
-
-    # Calculate saldo
-    saldo = total_masuk - total_keluar
-
-    transaksi = Transaksi.objects.order_by('-jenis')
-
-    return render(request, 'laporan_cetak.html', {'transaksi': transaksi, 'saldo': saldo, 'total_masuk':total_masuk, 'total_keluar':total_keluar })
-
-@login_required
 def transaksi_update(request, id):
     transaksi = get_object_or_404(Transaksi, id=id)
     if request.method == 'POST':
@@ -178,3 +153,78 @@ def transaksi_delete(request, id):
     transaksi = get_object_or_404(Transaksi, id=id)
     transaksi.delete()
     return redirect('transaksi_list')
+
+@login_required
+def laporan(request):
+    # Calculate total uang masuk and keluar
+    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=Sum('jumlah'))['total'] or 0
+    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=Sum('jumlah'))['total'] or 0
+
+    # Calculate saldo
+    saldo = total_masuk - total_keluar
+
+    transaksi = Transaksi.objects.order_by('-jenis')
+    # Ambil semua tanggal unik dari transaksi
+    tanggal_list = Transaksi.objects.values_list('tanggal', flat=True).distinct().order_by('tanggal')
+
+    return render(request, 'dashboard_laporan.html', {'transaksi': transaksi, 'saldo': saldo, 'total_masuk': total_masuk, 'total_keluar': total_keluar, 'tanggal_list': tanggal_list})
+
+@login_required
+def cetak_laporan_by_tanggal(request):
+    tanggal_mulai = request.GET.get('tanggal_mulai')
+    tanggal_selesai = request.GET.get('tanggal_selesai')
+    jenis = request.GET.get('jenis')
+
+    if tanggal_mulai and tanggal_selesai:
+        # Filter transaksi berdasarkan rentang tanggal
+        transaksi = Transaksi.objects.filter(tanggal__range=[tanggal_mulai, tanggal_selesai])
+
+        if jenis:
+            transaksi = transaksi.filter(jenis=jenis)
+
+        # Calculate total uang masuk and keluar untuk rentang tanggal yang dipilih
+        total_masuk = transaksi.filter(jenis='masuk').aggregate(total=Sum('jumlah'))['total'] or 0
+        total_keluar = transaksi.filter(jenis='keluar').aggregate(total=Sum('jumlah'))['total'] or 0
+
+        # Calculate saldo untuk rentang tanggal yang dipilih
+        saldo = total_masuk - total_keluar
+
+        # Calculate total transaksi (masuk + keluar)
+        total_transaksi = total_masuk + total_keluar
+
+        tanggal_mulai_date = datetime.strptime(tanggal_mulai, '%Y-%m-%d')
+        tanggal_selesai_date = datetime.strptime(tanggal_selesai, '%Y-%m-%d')
+        
+        # Format dates to the desired format
+        formatted_tanggal_mulai = tanggal_mulai_date.strftime('%d %B %Y')
+        formatted_tanggal_selesai = tanggal_selesai_date.strftime('%d %B %Y')
+        
+
+        return render(request, 'laporan_cetak_bytanggal.html', {
+            'transaksi': transaksi,
+            'saldo': saldo,
+            'total_masuk': total_masuk,
+            'total_keluar': total_keluar,
+            'total_transaksi': total_transaksi,
+            'tanggal_mulai': formatted_tanggal_mulai,
+            'tanggal_selesai': formatted_tanggal_selesai,
+        })
+    else:
+        return render(request, 'laporan_cetak_bytanggal.html', {'error': 'Tanggal mulai atau tanggal selesai tidak valid.'})
+    
+@login_required
+def cetak_laporan(request): 
+    # Calculate total uang masuk and keluar
+    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=Sum('jumlah'))['total'] or 0
+    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=Sum('jumlah'))['total'] or 0
+
+    # Calculate saldo
+    saldo = total_masuk - total_keluar
+
+    transaksi = Transaksi.objects.order_by('-jenis')
+
+    # Ambil semua tanggal unik dari transaksi
+    tanggal_list = Transaksi.objects.values_list('tanggal', flat=True).distinct().order_by('tanggal')
+
+    return render(request, 'laporan_cetak.html', {'transaksi': transaksi, 'saldo': saldo, 'total_masuk': total_masuk, 'total_keluar': total_keluar, 'tanggal_list': tanggal_list })
+

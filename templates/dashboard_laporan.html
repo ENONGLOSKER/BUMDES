@@ -13,24 +13,7 @@
         <div class="">
             <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Laporan</h1>
         </div>
-
-        <!-- sweet alert -->
-        <!-- {%for message in messages%}
-        {% if message.tags == 'success' %}                     
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>                                            
-        <script>
-            var m="{{message}}";
-            swal("Login",m,"success");
-        </script>
-        {%else%}
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>                                            
-        <script>
-            var m="{{message}}";
-            swal("Login",m,"danger");
-        </script>
-        {% endif %}
-        {%endfor%} -->
-
+        
         <!-- Topbar Navbar -->
         <ul class="navbar-nav ml-auto">
 
@@ -65,7 +48,7 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="mr-2 d-none d-lg-inline text-gray-600 small" style="text-transform: capitalize;">{{user}}</span>
                     <img class="img-profile rounded-circle"
-                        src="{%static 'img/iconbd.png'%}">
+                        src="{%static 'img/logos.png'%}">
                 </a>
                 <!-- Dropdown - User Information -->
                 <a class="scroll-to-top rounded" href="#page-top">
@@ -101,7 +84,7 @@
                     class="fas fa-plus fa-sm text-white-50"></i>  Cetak Laporan
                 </a>   -->
                 <button onclick="openPrintWindow('{% url 'cetak_laporan' %}')" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                    <i class="fas fa-plus fa-sm text-white-50"></i> Cetak Laporan
+                    <ion-icon name="print-outline" style="width: 20px; height: 20px; transform: translateY(4px);"></ion-icon> Cetak Laporan
                 </button>
         </div>
 
@@ -139,8 +122,42 @@
             <div class="col-xl-12 col-lg-9">
                 <div class="card shadow mb-UKM 4">
                     <div class="card shadow">
-                        <div class="card-header py-3">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
                             <h6 class="m-0 font-weight-bold text-primary">Data Rincian</h6>
+                           <!-- data filter -->
+                            <div class="filter d-flex justify-content-around align-items-center">
+                                <!-- jenis -->
+                                <div class="filter-jenis flex-column d-flex flex-column mx-2">
+                                    <span style="font-size: 12px;">Jenis</span>
+                                    <select name="jenis" id="jenis" class="text-primary" style="background-color: transparent; border: none;">
+                                        <option value="masuk" class="text-primary">Masuk</option>
+                                        <option value="keluar" class="text-primary">Keluar</option>
+                                    </select>
+                                </div>
+                                <!-- tanggal -->
+                                <div class="filter-tanggal d-flex justify-content-between mx-2">
+                                    <div class="tgl-mulai d-flex flex-column me-1 mx-2">
+                                        <span style="font-size: 12px;">Tanggal Mulai</span>
+                                        <select name="tanggal_mulai" id="tanggal_mulai" class="text-primary" style="background-color: transparent; border: none;">
+                                            {% for tanggal in tanggal_list %}
+                                                <option value="{{ tanggal|date:"Y-m-d" }}" class="text-primary">{{ tanggal|date:"F d, Y" }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="tgl-selesai d-flex flex-column me-1">
+                                        <span style="font-size: 12px;">Tanggal Selesai</span>
+                                        <select name="tanggal_selesai" id="tanggal_selesai" class="text-primary" style="background-color: transparent; border: none;">
+                                            {% for tanggal in tanggal_list %}
+                                                <option value="{{ tanggal|date:"Y-m-d" }}" class="text-primary">{{ tanggal|date:"F d, Y" }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- tombol cetak -->
+                                <button onclick="openPrintWindow_cetakbytanggal()" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm mx-4">
+                                    <ion-icon name="print-outline" style="width: 20px; height: 20px; transform: translateY(4px);"></ion-icon> Cetak by Filter
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -173,30 +190,6 @@
 
                                     </tbody>
                                 </table>
-                                <!-- Pagination -->
-                                <!-- <div class="d-flex justify-content-center">
-                                    <ul class="pagination">
-                                        {% if datas.has_previous %}
-                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ datas.previous_page_number }}">Previous</a></li>
-                                        {% else %}
-                                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                                        {% endif %}
-                                
-                                        {% for num in datas.paginator.page_range %}
-                                            {% if datas.number == num %}
-                                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                            {% else %}
-                                                <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ num }}">{{ num }}</a></li>
-                                            {% endif %}
-                                        {% endfor %}
-                                
-                                        {% if datas.has_next %}
-                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ datas.next_page_number }}">Next</a></li>
-                                        {% else %}
-                                            <li class="page-item disabled"><span class="page-link">Next</span></li>
-                                        {% endif %}
-                                    </ul>
-                                </div> -->
                         </div>
                     </div>                               
                 </div>
@@ -212,6 +205,25 @@
 
 <!-- SCRIPT -->   
 {%block script%}
+<script>
+    function openPrintWindow_cetakbytanggal() {
+        var tanggalMulai = document.getElementById('tanggal_mulai').value;
+        var tanggalSelesai = document.getElementById('tanggal_selesai').value;
+        var jenis = document.getElementById('jenis').value;
+
+        if (tanggalMulai && tanggalSelesai) {
+            var url = "{% url 'cetak_laporan_by_tanggal' %}?tanggal_mulai=" + encodeURIComponent(tanggalMulai) + "&tanggal_selesai=" + encodeURIComponent(tanggalSelesai) + "&jenis=" + encodeURIComponent(jenis);
+            console.log("URL:", url); // Debugging line to check the URL
+            var printWindow = window.open(url, '_blank');
+                printWindow.onload = function() {
+                    printWindow.print();
+                };
+        } else {
+            alert("Pilih tanggal mulai dan tanggal selesai terlebih dahulu.");
+        }
+    }
+</script>
+
 <script>
     function openPrintWindow(url) {
         var printWindow = window.open(url, '_blank');

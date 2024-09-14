@@ -34,6 +34,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('laporan/', views.laporan, name='laporan'),
     path('laporan/cetak/', views.cetak_laporan, name='cetak_laporan'),
+    path('cetak_laporan_by_tanggal/', views.cetak_laporan_by_tanggal, name='cetak_laporan_by_tanggal'),
 
     path('transaksi/masuk/', views.transaksi_masuk, name='transaksi_masuk'),
     path('transaksi/keluar/', views.transaksi_keluar, name='transaksi_keluar'),

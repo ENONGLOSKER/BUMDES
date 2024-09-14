@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Transaksi(models.Model):
     JENIS_TRANSAKSI = [
         ('masuk', 'Uang Masuk'),
