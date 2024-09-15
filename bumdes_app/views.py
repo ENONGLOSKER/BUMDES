@@ -76,7 +76,6 @@ def pesan(request):
     datas = Pesan.objects.all().order_by('-id')
     return render(request, 'dashboard_pesan.html', {'datas':datas})
 
-# fungsi untuk kalkulasi trasaksi masuk, keluar dan saldo
 def calculate_totals():
     # Gunakan Conditional Aggregation untuk menghitung total 'masuk' dan 'keluar' dalam satu query
     transaksi_aggregate = Transaksi.objects.aggregate(
