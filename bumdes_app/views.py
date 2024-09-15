@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from datetime import datetime
-
 # perbaikan
 from django.db.models import Sum, Case, When, F, DecimalField, IntegerField
 from django.core.paginator import Paginator
@@ -104,7 +103,6 @@ def calculate_totals():
     saldo = total_masuk - total_keluar
 
     return total_masuk, total_keluar, saldo
-
 
 @login_required 
 def dashboard(request):
