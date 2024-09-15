@@ -10,6 +10,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout, authenticate
 from datetime import datetime
 
+# perbaikan
+from django.db.models import Sum, Case, When, F, DecimalField, IntegerField
+from django.core.paginator import Paginator
+
+
 def index(request):
     data = Transaksi.objects.order_by('-id')
     # Calculate total uang masuk and keluar
@@ -31,25 +36,27 @@ def signout_form(request):
     logout(request)
     return redirect('index')
 
-def sigin_form(request):
-    
+def signin_form(request):
     if request.method == 'POST':
-        
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, f"Sign in Berhasil, Selamat datang {user}")
-            return redirect('dashboard')
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"Sign in berhasil, selamat datang {user.username}!")
+                return redirect('dashboard')
+            else:
+                messages.error(request, "Sign in gagal, silakan coba kembali!")
         else:
-            messages.error(request, "Sign in Gagal, Silahkan coba kembali!")
-            return redirect('login')
-        
+            messages.error(request, "Username dan password harus diisi!")
+
+        return redirect('login')
+    
     if request.user.is_authenticated:
         return redirect('dashboard')
-
+    
     return render(request, 'login.html')
 
 def kirim_pesan(request):
@@ -70,21 +77,71 @@ def pesan(request):
     datas = Pesan.objects.all().order_by('-id')
     return render(request, 'dashboard_pesan.html', {'datas':datas})
 
-@login_required
-def dashboard(request):
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
+# fungsi untuk kalkulasi trasaksi masuk, keluar dan saldo
+def calculate_totals():
+    # Gunakan Conditional Aggregation untuk menghitung total 'masuk' dan 'keluar' dalam satu query
+    transaksi_aggregate = Transaksi.objects.aggregate(
+        total_masuk=Sum(
+            Case(
+                When(jenis='masuk', then='jumlah'),
+                default=0,
+                output_field=IntegerField()
+            )
+        ),
+        total_keluar=Sum(
+            Case(
+                When(jenis='keluar', then='jumlah'),
+                default=0,
+                output_field=IntegerField()
+            )
+        )
+    )
 
-    # Calculate saldo
+    total_masuk = transaksi_aggregate['total_masuk'] or 0
+    total_keluar = transaksi_aggregate['total_keluar'] or 0
+
+    # Hitung saldo
+    saldo = total_masuk - total_keluar
+
+    return total_masuk, total_keluar, saldo
+
+
+@login_required 
+def dashboard(request):
+    # total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
+    # total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
+    # saldo = total_masuk - total_keluar
+
+    # Gabungkan query untuk menghitung total masuk dan keluar dalam satu langkah
+    total = Transaksi.objects.aggregate(
+        total_masuk=Sum(
+            Case(
+                When(jenis='masuk', then=F('jumlah')),
+                default=0,
+                output_field=DecimalField()  # Tentukan output_field sebagai DecimalField
+            )
+        ),
+        total_keluar=Sum(
+            Case(
+                When(jenis='keluar', then=F('jumlah')),
+                default=0,
+                output_field=DecimalField()  # Tentukan output_field sebagai DecimalField
+            )
+        )
+    )
+
+    total_masuk = total['total_masuk'] or 0
+    total_keluar = total['total_keluar'] or 0
+
+    # Hitung saldo
     saldo = total_masuk - total_keluar
 
     context = {
         'saldo': saldo,
         'masuk': total_masuk,
-        'keluar':total_keluar,
+        'keluar': total_keluar,
     }
     return render(request, 'dashboard.html', context)
-
 
 @login_required
 def transaksi_create(request):
@@ -99,42 +156,78 @@ def transaksi_create(request):
 
 @login_required
 def transaksi_list(request):
-    transaksi = Transaksi.objects.all()
-    
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
+    # Ambil semua transaksi
+    transaksi_list = Transaksi.objects.all().order_by('-tanggal')
 
-    # Calculate saldo
+    # Pagination
+    paginator = Paginator(transaksi_list, 5)  # Tampilkan 10 transaksi per halaman
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Hitung total uang masuk dan keluar
+    transaksi_aggregate = Transaksi.objects.aggregate(
+        total_masuk=Sum(
+            Case(
+                When(jenis='masuk', then='jumlah'),
+                default=0,
+                output_field=IntegerField()
+            )
+        ),
+        total_keluar=Sum(
+            Case(
+                When(jenis='keluar', then='jumlah'),
+                default=0,
+                output_field=IntegerField()
+            )
+        )
+    )
+
+    total_masuk = transaksi_aggregate['total_masuk'] or 0
+    total_keluar = transaksi_aggregate['total_keluar'] or 0
+
+    # Hitung saldo
     saldo = total_masuk - total_keluar
-    
-    return render(request, 'dashboard_transaksi.html', {'transaksi': transaksi, 'saldo': saldo})
+
+    return render(request, 'dashboard_transaksi.html', {
+        'page_obj': page_obj,
+        'saldo': saldo,
+        'total_masuk': total_masuk,
+        'total_keluar': total_keluar
+    })
 
 @login_required
 def transaksi_masuk(request):
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
+    total_masuk, total_keluar, saldo = calculate_totals()
 
-    # Calculate saldo
-    saldo = total_masuk - total_keluar
+    transaksi_list = Transaksi.objects.filter(jenis='masuk')
     
-    transaksi = Transaksi.objects.filter(jenis='masuk')
+    paginator = Paginator(transaksi_list,5)  # Tampilkan 10 transaksi per halaman
+    page_number = request.GET.get('page')
+    transaksi = paginator.get_page(page_number)
 
-    return render(request, 'dashboard_transaksi_masuk.html', {'transaksi': transaksi, 'saldo': saldo})
+    return render(request, 'dashboard_transaksi_masuk.html', {
+        'transaksi': transaksi,
+        'saldo': saldo,
+        'total_masuk': total_masuk,
+        'total_keluar': total_keluar
+    })
 
 @login_required
 def transaksi_keluar(request):
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=models.Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=models.Sum('jumlah'))['total'] or 0
+    total_masuk, total_keluar, saldo = calculate_totals()
 
-    # Calculate saldo
-    saldo = total_masuk - total_keluar
+    transaksi_list = Transaksi.objects.filter(jenis='keluar')
+    
+    paginator = Paginator(transaksi_list, 5)  # Tampilkan 10 transaksi per halaman
+    page_number = request.GET.get('page')
+    transaksi = paginator.get_page(page_number)
 
-    transaksi = Transaksi.objects.filter(jenis='keluar')
-
-    return render(request, 'dashboard_transaksi_keluar.html', {'transaksi': transaksi, 'saldo': saldo})
+    return render(request, 'dashboard_transaksi_keluar.html', {
+        'transaksi': transaksi,
+        'saldo': saldo,
+        'total_masuk': total_masuk,
+        'total_keluar': total_keluar
+    })
 
 @login_required
 def transaksi_update(request, id):
@@ -156,18 +249,26 @@ def transaksi_delete(request, id):
 
 @login_required
 def laporan(request):
-    # Calculate total uang masuk and keluar
-    total_masuk = Transaksi.objects.filter(jenis='masuk').aggregate(total=Sum('jumlah'))['total'] or 0
-    total_keluar = Transaksi.objects.filter(jenis='keluar').aggregate(total=Sum('jumlah'))['total'] or 0
+    total_masuk, total_keluar, saldo = calculate_totals()
 
-    # Calculate saldo
-    saldo = total_masuk - total_keluar
+    # Query untuk mengambil semua transaksi, diurutkan berdasarkan jenis
+    transaksi_list = Transaksi.objects.order_by('-jenis')
 
-    transaksi = Transaksi.objects.order_by('-jenis')
-    # Ambil semua tanggal unik dari transaksi
+    # Pagination
+    paginator = Paginator(transaksi_list, 5)  # Tampilkan 10 transaksi per halaman
+    page_number = request.GET.get('page')
+    transaksi = paginator.get_page(page_number)
+
+    # Ambil semua tanggal unik dari transaksi dengan optimasi
     tanggal_list = Transaksi.objects.values_list('tanggal', flat=True).distinct().order_by('tanggal')
 
-    return render(request, 'dashboard_laporan.html', {'transaksi': transaksi, 'saldo': saldo, 'total_masuk': total_masuk, 'total_keluar': total_keluar, 'tanggal_list': tanggal_list})
+    return render(request, 'dashboard_laporan.html', {
+        'transaksi': transaksi,
+        'saldo': saldo,
+        'total_masuk': total_masuk,
+        'total_keluar': total_keluar,
+        'tanggal_list': tanggal_list
+    })
 
 @login_required
 def cetak_laporan_by_tanggal(request):
@@ -177,7 +278,7 @@ def cetak_laporan_by_tanggal(request):
 
     if tanggal_mulai and tanggal_selesai:
         # Filter transaksi berdasarkan rentang tanggal
-        transaksi = Transaksi.objects.filter(tanggal__range=[tanggal_mulai, tanggal_selesai])
+        transaksi = Transaksi.objects.filter(tanggal__range=[tanggal_mulai, tanggal_selesai]).order_by('tanggal')
 
         if jenis:
             transaksi = transaksi.filter(jenis=jenis)

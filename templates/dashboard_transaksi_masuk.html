@@ -144,29 +144,29 @@
                                     </tbody>
                                 </table>
                                 <!-- Pagination -->
-                                <!-- <div class="d-flex justify-content-center">
+                                <div class="d-flex justify-content-center">
                                     <ul class="pagination">
-                                        {% if datas.has_previous %}
-                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ datas.previous_page_number }}">Previous</a></li>
+                                        {% if transaksi.has_previous %}
+                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ transaksi.previous_page_number }}">Previous</a></li>
                                         {% else %}
                                             <li class="page-item disabled"><span class="page-link">Previous</span></li>
                                         {% endif %}
                                 
-                                        {% for num in datas.paginator.page_range %}
-                                            {% if datas.number == num %}
+                                        {% for num in transaksi.paginator.page_range %}
+                                            {% if transaksi.number == num %}
                                                 <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                             {% else %}
                                                 <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ num }}">{{ num }}</a></li>
                                             {% endif %}
                                         {% endfor %}
                                 
-                                        {% if datas.has_next %}
-                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ datas.next_page_number }}">Next</a></li>
+                                        {% if transaksi.has_next %}
+                                            <li class="page-item"><a class="page-link" href="?cari={{ request.GET.cari|default_if_none:'' }}&page={{ transaksi.next_page_number }}">Next</a></li>
                                         {% else %}
                                             <li class="page-item disabled"><span class="page-link">Next</span></li>
                                         {% endif %}
                                     </ul>
-                                </div> -->
+                                </div>
                         </div>
                     </div>                               
                 </div>
