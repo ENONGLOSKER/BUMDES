@@ -48,4 +48,7 @@ urlpatterns = [
     path('transaksi/<int:id>/update/', views.transaksi_update, name='transaksi_update'),
     path('transaksi/<int:id>/delete/', views.transaksi_delete, name='transaksi_delete'),
 
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
